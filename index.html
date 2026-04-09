@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaavi Dairy Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Noto+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --g900: #1a5200;
+  --g800: #1e6600;
+  --g700: #237800;
+  --g600: #278400;
+  --g500: #33a300;
+  --g400: #4cba1a;
+  --g300: #7dd455;
+  --g200: #b3e88a;
+  --g100: #d9f4b8;
+  --g50:  #f0fae3;
+  --cream: #fafaf5;
+  --white: #ffffff;
+  --text1: #1a2e0a;
+  --text2: #3d5c1a;
+  --text3: #6b8c3a;
+  --border: #c8e0a0;
+  --border2: #dff0c0;
+  --shadow: 0 2px 12px rgba(39,132,0,0.08);
+  --shadow-md: 0 4px 24px rgba(39,132,0,0.13);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 18px;
+  --font: 'Baloo 2', 'Noto Sans', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--cream);color:var(--text1);min-height:100vh;font-size:15px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--g50)}
+::-webkit-scrollbar-thumb{background:var(--g300);border-radius:3px}
+
+/* ── HEADER ── */
+.header{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.header-logo{display:flex;align-items:center;gap:12px}
+.header-logo svg{height:36px;width:auto}
+.header-title{font-size:13px;color:var(--text3);font-weight:400;letter-spacing:0.3px}
+.header-user{display:flex;align-items:center;gap:10px}
+.user-pill{display:flex;align-items:center;gap:7px;background:var(--g50);border:1px solid var(--border);border-radius:30px;padding:5px 14px 5px 8px;font-size:13px;color:var(--text2);font-weight:500}
+.user-avatar{width:26px;height:26px;border-radius:50%;background:var(--g600);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.btn-logout{background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;padding:4px 8px;border-radius:6px;font-family:var(--font)}
+.btn-logout:hover{background:var(--g50);color:var(--g700)}
+
+/* ── LAYOUT ── */
+.layout{display:flex;min-height:calc(100vh - 64px)}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;background:var(--white);border-right:1.5px solid var(--border);padding:1.5rem 0;flex-shrink:0;display:flex;flex-direction:column;gap:4px}
+.nav-section{padding:0 1rem;margin-bottom:4px}
+.nav-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);padding:8px 12px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;color:var(--text2);font-weight:500;transition:all 0.15s;margin:1px 0;border:none;background:none;width:100%;text-align:left;font-family:var(--font)}
+.nav-item:hover{background:var(--g50);color:var(--g700)}
+.nav-item.active{background:var(--g600);color:#fff}
+.nav-item.active .nav-icon{opacity:1}
+.nav-icon{font-size:16px;width:20px;text-align:center}
+.nav-badge{margin-left:auto;font-size:10px;background:var(--g100);color:var(--g800);padding:2px 7px;border-radius:10px;font-weight:600}
+.nav-item.active .nav-badge{background:rgba(255,255,255,0.25);color:#fff}
+
+/* ── MAIN ── */
+.main{flex:1;padding:1.5rem;overflow-x:hidden}
+.page{display:none;animation:fadeIn 0.2s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:1.5px solid var(--border2);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.2rem;box-shadow:var(--shadow)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+.card-title{font-size:15px;font-weight:600;color:var(--text1);display:flex;align-items:center;gap:8px}
+.card-title .icon{font-size:18px}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:1.2rem}
+.stat-card{background:var(--g50);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;text-align:center;transition:transform 0.15s}
+.stat-card:hover{transform:translateY(-2px)}
+.stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;font-weight:600;margin-bottom:6px}
+.stat-value{font-size:24px;font-weight:700;color:var(--g800);line-height:1}
+.stat-unit{font-size:12px;font-weight:500;color:var(--text3);margin-left:2px}
+.stat-card.highlight{background:var(--g600);border-color:var(--g700)}
+.stat-card.highlight .stat-label{color:rgba(255,255,255,0.75)}
+.stat-card.highlight .stat-value{color:#fff}
+.stat-card.highlight .stat-unit{color:rgba(255,255,255,0.75)}
+
+/* ── FORMS ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+.form-input{padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--white);color:var(--text1);font-size:14px;font-family:var(--font);transition:border-color 0.15s,box-shadow 0.15s;outline:none}
+.form-input:focus{border-color:var(--g500);box-shadow:0 0 0 3px rgba(39,132,0,0.1)}
+.form-input:hover{border-color:var(--g400)}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s;border:1.5px solid transparent;font-family:var(--font);line-height:1}
+.btn:active{transform:scale(0.97)}
+.btn-primary{background:var(--g600);color:#fff;border-color:var(--g600)}
+.btn-primary:hover{background:var(--g700);border-color:var(--g700);box-shadow:0 2px 8px rgba(39,132,0,0.3)}
+.btn-outline{background:transparent;color:var(--g700);border-color:var(--border)}
+.btn-outline:hover{background:var(--g50);border-color:var(--g400)}
+.btn-danger{background:transparent;color:#dc2626;border-color:#fca5a5}
+.btn-danger:hover{background:#fee2e2}
+.btn-excel{background:#1D6F42;color:#fff;border-color:#1D6F42}
+.btn-excel:hover{background:#155234}
+.btn-sm{padding:6px 14px;font-size:13px}
+.btn-xs{padding:4px 10px;font-size:12px}
+.btn-group{display:flex;gap:8px;justify-content:flex-end;margin-top:1rem}
+
+/* ── TABLES ── */
+.table-wrap{overflow-x:auto;border-radius:var(--radius-sm);border:1.5px solid var(--border2)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--g50)}
+th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1.5px solid var(--border)}
+td{padding:10px 14px;border-bottom:1px solid var(--border2);color:var(--text1)}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--g50)}
+.empty-row td{text-align:center;color:var(--text3);padding:2rem;font-size:14px}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-green{background:var(--g100);color:var(--g800)}
+.badge-blue{background:#dbeafe;color:#1e40af}
+.badge-amber{background:#fef3c7;color:#92400e}
+.badge-red{background:#fee2e2;color:#991b1b}
+.badge-gray{background:#f3f4f6;color:#374151}
+
+/* ── MESSAGES ── */
+.msg{padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:12px;display:none;font-weight:500}
+.msg.show{display:flex;align-items:center;gap:8px}
+.msg-success{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
+.msg-error{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
+.msg-info{background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe}
+
+/* ── TABS (sub) ── */
+.sub-tabs{display:flex;gap:6px;margin-bottom:1.2rem;background:var(--g50);padding:5px;border-radius:var(--radius);border:1.5px solid var(--border)}
+.sub-tab{flex:1;padding:8px 10px;border:none;background:transparent;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;color:var(--text3);transition:all 0.15s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:6px}
+.sub-tab:hover{background:var(--white);color:var(--text2)}
+.sub-tab.active{background:var(--white);color:var(--g700);box-shadow:var(--shadow)}
+
+/* ── SERVICE TABS (customer portal) ── */
+.service-tabs{display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border)}
+.service-tab{padding:10px 22px;border:none;background:transparent;font-size:14px;font-weight:600;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s;font-family:var(--font);display:flex;align-items:center;gap:7px}
+.service-tab:hover{color:var(--g700)}
+.service-tab.active{color:var(--g700);border-bottom-color:var(--g600)}
+
+/* ── SABZI CHECKBOXES ── */
+.sabzi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:1rem}
+.sabzi-item{background:var(--g50);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;transition:all 0.15s;cursor:pointer}
+.sabzi-item.checked{background:var(--g100);border-color:var(--g500)}
+.sabzi-item-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.sabzi-checkbox{width:18px;height:18px;border:2px solid var(--border);border-radius:4px;background:var(--white);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s}
+.sabzi-item.checked .sabzi-checkbox{background:var(--g600);border-color:var(--g600)}
+.sabzi-check-icon{color:#fff;font-size:11px;display:none}
+.sabzi-item.checked .sabzi-check-icon{display:block}
+.sabzi-name{font-size:13px;font-weight:600;color:var(--text1)}
+.sabzi-rate{font-size:11px;color:var(--text3)}
+.sabzi-qty-row{display:flex;align-items:center;gap:8px}
+.sabzi-qty-row label{font-size:11px;color:var(--text3);white-space:nowrap}
+.sabzi-qty-input{flex:1;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:var(--font);background:var(--white)}
+
+/* ── LOGIN SCREEN ── */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--g50) 0%,var(--cream) 60%,#fff 100%)}
+.login-card{background:var(--white);border:1.5px solid var(--border);border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:380px;box-shadow:var(--shadow-md);text-align:center}
+.login-logo{margin-bottom:1.5rem}
+.login-logo svg{height:48px;width:auto}
+.login-title{font-size:22px;font-weight:700;color:var(--text1);margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--text3);margin-bottom:1.8rem}
+.login-form{text-align:left;display:flex;flex-direction:column;gap:14px}
+.login-err{display:none}
+
+/* ── PIN SCREEN ── */
+.pin-wrap{display:flex;align-items:center;justify-content:center;padding:3rem 1rem}
+.pin-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:2rem;max-width:340px;width:100%;text-align:center;box-shadow:var(--shadow)}
+.pin-icon{font-size:36px;margin-bottom:1rem}
+.pin-title{font-size:18px;font-weight:700;color:var(--text1);margin-bottom:6px}
+.pin-sub{font-size:13px;color:var(--text3);margin-bottom:1.5rem}
+.pin-input{width:180px;text-align:center;font-size:26px;letter-spacing:10px;padding:10px;border:2px solid var(--border);border-radius:var(--radius-sm);background:var(--white);color:var(--text1);font-family:var(--font)}
+.pin-input:focus{border-color:var(--g500);outline:none}
+.pin-hint{font-size:12px;color:var(--text3);margin-top:1rem}
+
+/* ── PAGE HEADER ── */
+.page-header{margin-bottom:1.5rem}
+.page-title{font-size:22px;font-weight:700;color:var(--text1);display:flex;align-items:center;gap:10px}
+.page-sub{font-size:13px;color:var(--text3);margin-top:3px}
+
+/* ── GRAND TOTAL ── */
+.grand-total{background:var(--g600);border-radius:var(--radius-lg);padding:1.5rem;color:#fff;margin-top:1.5rem}
+.gt-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;opacity:0.8;margin-bottom:1rem}
+.gt-rows{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem}
+.gt-row{display:flex;justify-content:space-between;font-size:14px;opacity:0.9}
+.gt-divider{border:none;border-top:1px solid rgba(255,255,255,0.3);margin:8px 0}
+.gt-total{display:flex;justify-content:space-between;font-size:20px;font-weight:700}
+.gt-actions{margin-top:1.2rem;display:flex;gap:8px}
+
+/* ── USER CARD (admin) ── */
+.user-card{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);margin-bottom:8px;background:var(--white);transition:box-shadow 0.15s}
+.user-card:hover{box-shadow:var(--shadow)}
+.user-av{width:38px;height:38px;border-radius:50%;background:var(--g600);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.user-info{flex:1}
+.user-name{font-size:14px;font-weight:600;color:var(--text1)}
+.user-meta{font-size:12px;color:var(--text3)}
+.user-services{display:flex;gap:5px;margin-top:4px}
+.svc-pill{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.svc-milk{background:var(--g100);color:var(--g800)}
+.svc-chhachh{background:#dbeafe;color:#1e40af}
+.svc-sabzi{background:#fef3c7;color:#92400e}
+
+/* ── RATE ROW ── */
+.rate-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--border2);border-radius:var(--radius-sm);margin-bottom:6px;background:var(--g50)}
+.rate-label{flex:1;font-size:13px;font-weight:600;color:var(--text2)}
+.rate-val{font-size:14px;font-weight:700;color:var(--g700)}
+
+/* ── DELIVERY TODAY ── */
+.today-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.count-chip{background:var(--g100);color:var(--g800);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{display:none}
+  .main{padding:1rem}
+  .form-grid{grid-template-columns:1fr}
+  .form-grid.three{grid-template-columns:1fr 1fr}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .service-tab{padding:8px 12px;font-size:13px}
+  .sub-tab{font-size:12px}
+}
+
+/* MOBILE NAV */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1.5px solid var(--border);padding:6px 0 8px;z-index:200}
+.mobile-nav-items{display:flex;justify-content:space-around}
+.mob-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 12px;cursor:pointer;border:none;background:none;color:var(--text3);font-size:10px;font-family:var(--font);font-weight:600;border-radius:var(--radius-sm);transition:all 0.15s}
+.mob-nav-item.active{color:var(--g700)}
+.mob-icon{font-size:20px}
+@media(max-width:768px){.mobile-nav{display:block}.layout{padding-bottom:70px}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 100">
+        <defs><style>.cls-1{fill:#278400;stroke-width:0px}</style></defs>
+        <g><path class="cls-1" d="m136.958805,68.016096v3.216218h-11.179581l-4.47684-32.693727c.006821-.274838-.161257-.501972-.363382-.549675-.256691-.056784-.583751.174898-.604186.549675l-4.415509,32.693727h-11.263592v-2.40762l6.848111-40.089239h18.688633l6.766346,39.280641Z"/><path class="cls-1" d="m172.130549,71.232315h-11.736022l-4.474539-32.693727c.004547-.274838-.163558-.501972-.363437-.549675-.256635-.056784-.583723.174898-.604158.549675l-4.415509,32.693727h-11.179553v-2.898225l6.764044-39.598635h18.688633l7.32054,42.496859Z"/><path class="cls-1" d="m200.584674,28.735863h-11.673747s-4.415458,32.693692-4.415458,32.693692c-.020055.3748-.348915.606405-.604856.547945-.200917-.045902-.368865-.273266-.362915-.547945l-4.475947-32.693692h-11.734229s7.318771,42.495698,7.318771,42.495698h18.690092s7.258289-42.495698,7.258289-42.495698Z"/><rect class="cls-1" x="202.982196" y="28.735858" width="10.765332" height="42.301513"/></g>
+        <g><path class="cls-1" d="m75.702048,57.322154l-3.858016,2.733883v11.208507h7.906292v-13.952414l-3.597635.010024h-.45064Zm-3.858016-28.585854v17.069413l7.906292-4.756791v-12.312622h-7.906292Zm7.906292,28.57583l-3.597635.010024-.027536.405547c1.251787,0,2.461002-.080131,3.625171-.240333.37303-.050059.743569-.110204,1.106576-.177744l-1.106576.002506Zm14.395552-4.123441l-.64342.610919c-.968882.788601-2.481035,1.827621-4.538981,2.583706-.716019.26032-1.396983.4531-2.030395.590809l6.471733,14.290421h8.85265v-1.827621l-8.111587-16.248233Z"/><path class="cls-1" d="m62.017671,53.573272l21.512463-12.598308c.37099-.230676,1.850519-1.090179,3.749876-.723628.441151.085144,2.192942.423212,3.124899,2.006527.824687,1.401048.474921,2.87257.328938,3.486728-.401597,1.689546-1.459764,2.72007-2.302558,3.519612-2.110083,2.001759-4.542954,2.827401-6.151116,3.190651-2.225421.319365-4.563186.589037-7.006356.789457-4.757479.390328-9.197656.459396-13.256146.328961Z"/><polygon class="cls-1" points="56.688894 44.62619 68.627363 45.160228 69.122704 43.178868 56.688894 44.62619"/><polygon class="cls-1" points="45.899768 48.529572 64.758809 49.253233 65.679832 47.367329 45.899768 48.529572"/><path class="cls-1" d="m102.953448,33.097507c-.961364-.32291-1.805067-.342958-2.335839-.312947-.207786-.615869-.603355-1.442-1.381963-2.120459-1.557231-1.361991-3.99571-1.562289-6.281474-.593376-.548283.155251-2.002859.488185-3.602647-.147733-.743554-.295405-1.286826-.70847-1.644835-1.036453.022524.245345.187768,1.82756,1.547207,2.763956.718525.493197,1.45207.588303,1.8251.608351.11517.070107.230325.142721.345494.212767l-5.212443,6.248973c.280399-.070107,2.598711-.608351,4.538981.93884,1.667374,1.331919,1.880187,3.269621,1.907722,3.94808.095137,2.313361-1.364451,3.950709-2.400919,5.114846-2.060452,2.310794-4.511446,3.184539-5.823316,3.632689-1.762526.605845-3.044355.721-6.889841.953815-2.706363.165275-5.71817.330489-8.997846.478222l-5.773242,2.796473-15.361928,7.613408c-.753578.771059-1.364451.928816-1.792568.921298-.568301-.007518-1.096567-.310441-1.299356-.082638-.115155.132697-.060083.370524,0,.543317.585843.368018,2.143059,1.241763,4.311163,1.201667,2.200636-.042541,3.742846-1.006442,4.308657-1.399459l15.459571-8.862689c.302923-.237827.580816-.315453.658426-.230309.070107.075119-.010009.305429-.182756.54075l-13.436679,9.293297c-.242855.33544-.768599.958888-1.659871,1.3494-.460664.200298-.883769.28043-1.201713.312947.751072.290454,1.920237.625894,3.35478.573328,2.949218-.102625,4.947065-1.765032,5.575465-2.333348l6.33404-4.851897,7.368017-5.643066,9.012867.147733c1.109082-.082638,2.598711-.310441,4.258582-.918853,2.057946-.756084,3.570099-1.795043,4.538981-2.583645,1.121596-1.01396,2.791491-2.801485,3.980689-5.475346.703504-1.582215,1.046492-3.039312,1.216733-4.178451.03756-1.046477.255369-2.693848,1.216733-4.391279.485694-.856203,1.159156-2.040389,2.598711-2.829051,1.379472-.753578,2.721384-.741048,3.354796-.690989-.403087-.405547-1.209231-1.101548-2.433482-1.512169Zm-6.233891,1.529711c-.708516,0-1.281829-.575834-1.281829-1.284365,0-.70847.573313-1.281798,1.281829-1.281798.7085,0,1.284335.573328,1.284335,1.281798,0,.708531-.575834,1.284365-1.284335,1.284365Z"/></g>
+      </svg>
+    </div>
+    <div class="login-title">Namaskar! 🙏</div>
+    <div class="login-sub">Apna account login karein</div>
+    <div class="login-form">
+      <div id="login-err" class="msg msg-error">Username ya password galat hai</div>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" type="text" id="login-user" placeholder="jaise: Ramesh9876" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="login-pass" placeholder="••••••" autocomplete="current-password" onkeyup="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px" onclick="doLogin()">Login karein</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 100">
+        <defs><style>.cls-1{fill:#278400;stroke-width:0px}</style></defs>
+        <g><path class="cls-1" d="m136.958805,68.016096v3.216218h-11.179581l-4.47684-32.693727c.006821-.274838-.161257-.501972-.363382-.549675-.256691-.056784-.583751.174898-.604186.549675l-4.415509,32.693727h-11.263592v-2.40762l6.848111-40.089239h18.688633l6.766346,39.280641Z"/><path class="cls-1" d="m172.130549,71.232315h-11.736022l-4.474539-32.693727c.004547-.274838-.163558-.501972-.363437-.549675-.256635-.056784-.583723.174898-.604158.549675l-4.415509,32.693727h-11.179553v-2.898225l6.764044-39.598635h18.688633l7.32054,42.496859Z"/><path class="cls-1" d="m200.584674,28.735863h-11.673747s-4.415458,32.693692-4.415458,32.693692c-.020055.3748-.348915.606405-.604856.547945-.200917-.045902-.368865-.273266-.362915-.547945l-4.475947-32.693692h-11.734229s7.318771,42.495698,7.318771,42.495698h18.690092s7.258289-42.495698,7.258289-42.495698Z"/><rect class="cls-1" x="202.982196" y="28.735858" width="10.765332" height="42.301513"/></g>
+        <g><path class="cls-1" d="m75.702048,57.322154l-3.858016,2.733883v11.208507h7.906292v-13.952414l-3.597635.010024h-.45064Zm-3.858016-28.585854v17.069413l7.906292-4.756791v-12.312622h-7.906292Zm7.906292,28.57583l-3.597635.010024-.027536.405547c1.251787,0,2.461002-.080131,3.625171-.240333.37303-.050059.743569-.110204,1.106576-.177744l-1.106576.002506Zm14.395552-4.123441l-.64342.610919c-.968882.788601-2.481035,1.827621-4.538981,2.583706-.716019.26032-1.396983.4531-2.030395.590809l6.471733,14.290421h8.85265v-1.827621l-8.111587-16.248233Z"/><path class="cls-1" d="m62.017671,53.573272l21.512463-12.598308c.37099-.230676,1.850519-1.090179,3.749876-.723628.441151.085144,2.192942.423212,3.124899,2.006527.824687,1.401048.474921,2.87257.328938,3.486728-.401597,1.689546-1.459764,2.72007-2.302558,3.519612-2.110083,2.001759-4.542954,2.827401-6.151116,3.190651-2.225421.319365-4.563186.589037-7.006356.789457-4.757479.390328-9.197656.459396-13.256146.328961Z"/><polygon class="cls-1" points="56.688894 44.62619 68.627363 45.160228 69.122704 43.178868 56.688894 44.62619"/><polygon class="cls-1" points="45.899768 48.529572 64.758809 49.253233 65.679832 47.367329 45.899768 48.529572"/><path class="cls-1" d="m102.953448,33.097507c-.961364-.32291-1.805067-.342958-2.335839-.312947-.207786-.615869-.603355-1.442-1.381963-2.120459-1.557231-1.361991-3.99571-1.562289-6.281474-.593376-.548283.155251-2.002859.488185-3.602647-.147733-.743554-.295405-1.286826-.70847-1.644835-1.036453.022524.245345.187768,1.82756,1.547207,2.763956.718525.493197,1.45207.588303,1.8251.608351.11517.070107.230325.142721.345494.212767l-5.212443,6.248973c.280399-.070107,2.598711-.608351,4.538981.93884,1.667374,1.331919,1.880187,3.269621,1.907722,3.94808.095137,2.313361-1.364451,3.950709-2.400919,5.114846-2.060452,2.310794-4.511446,3.184539-5.823316,3.632689-1.762526.605845-3.044355.721-6.889841.953815-2.706363.165275-5.71817.330489-8.997846.478222l-5.773242,2.796473-15.361928,7.613408c-.753578.771059-1.364451.928816-1.792568.921298-.568301-.007518-1.096567-.310441-1.299356-.082638-.115155.132697-.060083.370524,0,.543317.585843.368018,2.143059,1.241763,4.311163,1.201667,2.200636-.042541,3.742846-1.006442,4.308657-1.399459l15.459571-8.862689c.302923-.237827.580816-.315453.658426-.230309.070107.075119-.010009.305429-.182756.54075l-13.436679,9.293297c-.242855.33544-.768599.958888-1.659871,1.3494-.460664.200298-.883769.28043-1.201713.312947.751072.290454,1.920237.625894,3.35478.573328,2.949218-.102625,4.947065-1.765032,5.575465-2.333348l6.33404-4.851897,7.368017-5.643066,9.012867.147733c1.109082-.082638,2.598711-.310441,4.258582-.918853,2.057946-.756084,3.570099-1.795043,4.538981-2.583645,1.121596-1.01396,2.791491-2.801485,3.980689-5.475346.703504-1.582215,1.046492-3.039312,1.216733-4.178451.03756-1.046477.255369-2.693848,1.216733-4.391279.485694-.856203,1.159156-2.040389,2.598711-2.829051,1.379472-.753578,2.721384-.741048,3.354796-.690989-.403087-.405547-1.209231-1.101548-2.433482-1.512169Zm-6.233891,1.529711c-.708516,0-1.281829-.575834-1.281829-1.284365,0-.70847.573313-1.281798,1.281829-1.281798.7085,0,1.284335.573328,1.284335,1.281798,0,.708531-.575834,1.284365-1.284335,1.284365Z"/></g>
+      </svg>
+      <div class="header-title">Dairy Manager</div>
+    </div>
+    <div class="header-user">
+      <div class="user-pill">
+        <div class="user-avatar" id="hdr-av">K</div>
+        <span id="hdr-name">User</span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="nav-section">
+        <div class="nav-label">Customer</div>
+        <button class="nav-item active" onclick="gotoPage('portal')" id="nav-portal">
+          <span class="nav-icon">🏠</span> Mera Portal
+        </button>
+      </div>
+      <div class="nav-section" id="nav-delivery-section" style="display:none">
+        <div class="nav-label">Delivery</div>
+        <button class="nav-item" onclick="gotoPage('delivery')" id="nav-delivery">
+          <span class="nav-icon">🚚</span> Delivery Entry
+        </button>
+      </div>
+      <div class="nav-section" id="nav-admin-section" style="display:none">
+        <div class="nav-label">Admin</div>
+        <button class="nav-item" onclick="gotoPage('admin')" id="nav-admin">
+          <span class="nav-icon">⚙️</span> Admin Panel
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+
+      <!-- ═══ CUSTOMER PORTAL ═══ -->
+      <div id="page-portal" class="page active">
+        <div class="page-header">
+          <div class="page-title">🏠 Mera Portal</div>
+          <div class="page-sub" id="portal-month-label"></div>
+        </div>
+
+        <div class="service-tabs" id="service-tabs-container"></div>
+
+        <div id="svc-milk" class="svc-page" style="display:none">
+          <div class="stat-grid">
+            <div class="stat-card"><div class="stat-label">Kul Milk</div><div class="stat-value" id="m-total">0<span class="stat-unit">L</span></div></div>
+            <div class="stat-card"><div class="stat-label">Avg Fat</div><div class="stat-value" id="m-fat">0<span class="stat-unit">%</span></div></div>
+            <div class="stat-card highlight"><div class="stat-label">Bill</div><div class="stat-value">₹<span id="m-bill">0</span></div></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">🥛</span> Milk Delivery</div>
+              <button class="btn btn-excel btn-sm" onclick="dlExcel('milk')">⬇ Excel</button>
+            </div>
+            <div class="table-wrap">
+              <table><thead><tr><th>Tarikh</th><th>Samay</th><th>Wajan</th><th>Fat %</th><th>Rate</th><th>Amount</th></tr></thead>
+              <tbody id="milk-tbody"></tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <div id="svc-chhachh" class="svc-page" style="display:none">
+          <div class="stat-grid">
+            <div class="stat-card"><div class="stat-label">Kul Chhachh</div><div class="stat-value" id="c-total">0<span class="stat-unit">L</span></div></div>
+            <div class="stat-card highlight"><div class="stat-label">Bill</div><div class="stat-value">₹<span id="c-bill">0</span></div></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">🥤</span> Chhachh Delivery</div>
+              <button class="btn btn-excel btn-sm" onclick="dlExcel('chhachh')">⬇ Excel</button>
+            </div>
+            <div class="table-wrap">
+              <table><thead><tr><th>Tarikh</th><th>Samay</th><th>Wajan</th><th>Rate</th><th>Amount</th></tr></thead>
+              <tbody id="chhachh-tbody"></tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <div id="svc-sabzi" class="svc-page" style="display:none">
+          <div class="stat-grid">
+            <div class="stat-card"><div class="stat-label">Orders</div><div class="stat-value" id="s-orders">0</div></div>
+            <div class="stat-card highlight"><div class="stat-label">Bill</div><div class="stat-value">₹<span id="s-bill">0</span></div></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">🥬</span> Sabzi Delivery</div>
+              <button class="btn btn-excel btn-sm" onclick="dlExcel('sabzi')">⬇ Excel</button>
+            </div>
+            <div class="table-wrap">
+              <table><thead><tr><th>Tarikh</th><th>Samay</th><th>Items</th><th>Amount</th></tr></thead>
+              <tbody id="sabzi-tbody"></tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <div id="grand-total-section"></div>
+      </div>
+
+      <!-- ═══ DELIVERY ENTRY ═══ -->
+      <div id="page-delivery" class="page">
+        <div id="del-pin-wrap" class="pin-wrap">
+          <div class="pin-card">
+            <div class="pin-icon">🔐</div>
+            <div class="pin-title">Delivery PIN</div>
+            <div class="pin-sub">Delivery entry ke liye PIN daalein</div>
+            <input type="password" class="pin-input" id="del-pin-inp" maxlength="4" placeholder="••••" onkeyup="if(event.key==='Enter')checkDelPin()">
+            <br><br>
+            <button class="btn btn-primary" onclick="checkDelPin()">Andar Jaayein</button>
+            <div id="del-pin-msg" class="msg" style="margin-top:12px"></div>
+            <div class="pin-hint">Default PIN: 1234</div>
+          </div>
+        </div>
+
+        <div id="del-content" style="display:none">
+          <div class="page-header" style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div class="page-title">🚚 Delivery Entry</div>
+              <div class="page-sub">Naya delivery record add karein</div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="lockDel()">🔒 Lock</button>
+          </div>
+
+          <div class="sub-tabs">
+            <button class="sub-tab active" onclick="switchDelTab('milk')">🥛 Milk</button>
+            <button class="sub-tab" onclick="switchDelTab('chhachh')">🥤 Chhachh</button>
+            <button class="sub-tab" onclick="switchDelTab('sabzi')">🥬 Sabzi</button>
+          </div>
+
+          <!-- Milk Form -->
+          <div id="del-milk" class="del-form">
+            <div class="card">
+              <div class="card-title"><span class="icon">🥛</span> Milk Delivery</div>
+              <div id="del-milk-msg" class="msg"></div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Customer ID</label>
+                  <input class="form-input" type="text" id="dm-uid" placeholder="C001" list="uid-dl-milk">
+                  <datalist id="uid-dl-milk"></datalist>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Tarikh</label>
+                  <input class="form-input" type="date" id="dm-date">
+                </div>
+              </div>
+              <div class="form-grid three">
+                <div class="form-group">
+                  <label class="form-label">Samay</label>
+                  <input class="form-input" type="time" id="dm-time">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Wajan (Litre)</label>
+                  <input class="form-input" type="number" id="dm-qty" step="0.1" min="0" placeholder="2.5">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Fat %</label>
+                  <input class="form-input" type="number" id="dm-fat" step="0.1" min="0" max="10" placeholder="4.5">
+                </div>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-outline" onclick="clearForm('milk')">Clear</button>
+                <button class="btn btn-primary" onclick="saveDel('milk')">✓ Save Karein</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="today-header">
+                <div class="card-title"><span class="icon">📋</span> Aaj ki Milk Deliveries</div>
+                <span class="count-chip" id="milk-today-count">0 records</span>
+              </div>
+              <div class="table-wrap">
+                <table><thead><tr><th>Customer</th><th>Samay</th><th>Wajan</th><th>Fat%</th><th>Amount</th><th></th></tr></thead>
+                <tbody id="milk-today-log"></tbody></table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chhachh Form -->
+          <div id="del-chhachh" class="del-form" style="display:none">
+            <div class="card">
+              <div class="card-title"><span class="icon">🥤</span> Chhachh Delivery</div>
+              <div id="del-chhachh-msg" class="msg"></div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Customer ID</label>
+                  <input class="form-input" type="text" id="dc-uid" placeholder="C001" list="uid-dl-chhachh">
+                  <datalist id="uid-dl-chhachh"></datalist>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Tarikh</label>
+                  <input class="form-input" type="date" id="dc-date">
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Samay</label>
+                  <input class="form-input" type="time" id="dc-time">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Wajan (Litre)</label>
+                  <input class="form-input" type="number" id="dc-qty" step="0.1" min="0" placeholder="2.0">
+                </div>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-outline" onclick="clearForm('chhachh')">Clear</button>
+                <button class="btn btn-primary" onclick="saveDel('chhachh')">✓ Save Karein</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="today-header">
+                <div class="card-title"><span class="icon">📋</span> Aaj ki Chhachh Deliveries</div>
+                <span class="count-chip" id="chhachh-today-count">0 records</span>
+              </div>
+              <div class="table-wrap">
+                <table><thead><tr><th>Customer</th><th>Samay</th><th>Wajan</th><th>Amount</th><th></th></tr></thead>
+                <tbody id="chhachh-today-log"></tbody></table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sabzi Form -->
+          <div id="del-sabzi" class="del-form" style="display:none">
+            <div class="card">
+              <div class="card-title"><span class="icon">🥬</span> Sabzi Delivery</div>
+              <div id="del-sabzi-msg" class="msg"></div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Customer ID</label>
+                  <input class="form-input" type="text" id="ds-uid" placeholder="C001" list="uid-dl-sabzi">
+                  <datalist id="uid-dl-sabzi"></datalist>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Tarikh</label>
+                  <input class="form-input" type="date" id="ds-date">
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Samay</label>
+                  <input class="form-input" type="time" id="ds-time">
+                </div>
+              </div>
+              <div class="form-label" style="margin-bottom:10px">Items select karein</div>
+              <div class="sabzi-grid" id="sabzi-items-grid"></div>
+              <div style="background:var(--g50);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                <span style="font-size:14px;font-weight:600;color:var(--text2)">Estimated Total</span>
+                <span style="font-size:18px;font-weight:700;color:var(--g700)">₹<span id="sabzi-total-preview">0</span></span>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-outline" onclick="clearForm('sabzi')">Clear</button>
+                <button class="btn btn-primary" onclick="saveDel('sabzi')">✓ Save Karein</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="today-header">
+                <div class="card-title"><span class="icon">📋</span> Aaj ki Sabzi Deliveries</div>
+                <span class="count-chip" id="sabzi-today-count">0 records</span>
+              </div>
+              <div class="table-wrap">
+                <table><thead><tr><th>Customer</th><th>Samay</th><th>Items</th><th>Amount</th><th></th></tr></thead>
+                <tbody id="sabzi-today-log"></tbody></table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ ADMIN PANEL ═══ -->
+      <div id="page-admin" class="page">
+        <div id="adm-pin-wrap" class="pin-wrap">
+          <div class="pin-card">
+            <div class="pin-icon">⚙️</div>
+            <div class="pin-title">Admin PIN</div>
+            <div class="pin-sub">Admin panel ke liye PIN daalein</div>
+            <input type="password" class="pin-input" id="adm-pin-inp" maxlength="4" placeholder="••••" onkeyup="if(event.key==='Enter')checkAdmPin()">
+            <br><br>
+            <button class="btn btn-primary" onclick="checkAdmPin()">Andar Jaayein</button>
+            <div id="adm-pin-msg" class="msg" style="margin-top:12px"></div>
+            <div class="pin-hint">Default PIN: 1234</div>
+          </div>
+        </div>
+
+        <div id="adm-content" style="display:none">
+          <div class="page-header" style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div class="page-title">⚙️ Admin Panel</div>
+              <div class="page-sub">Users, rates aur settings manage karein</div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="lockAdm()">🔒 Lock</button>
+          </div>
+
+          <div class="sub-tabs">
+            <button class="sub-tab active" onclick="switchAdmTab('users')">👥 Users</button>
+            <button class="sub-tab" onclick="switchAdmTab('rates')">💰 Rates</button>
+            <button class="sub-tab" onclick="switchAdmTab('sabzilist')">🥬 Sabzi List</button>
+            <button class="sub-tab" onclick="switchAdmTab('security')">🔑 Security</button>
+          </div>
+
+          <!-- Users Tab -->
+          <div id="adm-users" class="adm-tab">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">👥 Naaya User Banayein</div>
+              </div>
+              <div id="adm-user-msg" class="msg"></div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Poora Naam</label>
+                  <input class="form-input" type="text" id="nu-name" placeholder="Ramesh Kumar">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Mobile Number</label>
+                  <input class="form-input" type="text" id="nu-mobile" maxlength="10" placeholder="9876543210">
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Password</label>
+                  <input class="form-input" type="text" id="nu-pass" placeholder="••••••">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Type</label>
+                  <select class="form-input" id="nu-type">
+                    <option value="normal">Normal</option>
+                    <option value="restaurant">Restaurant</option>
+                    <option value="delivery">Delivery Wala</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+              </div>
+              <div style="margin-bottom:12px">
+                <div class="form-label" style="margin-bottom:8px">Services (jo customer leta hai)</div>
+                <div style="display:flex;gap:12px;flex-wrap:wrap">
+                  <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text2)">
+                    <input type="checkbox" id="nu-milk" style="width:16px;height:16px;accent-color:var(--g600)"> 🥛 Milk
+                  </label>
+                  <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text2)">
+                    <input type="checkbox" id="nu-chhachh" style="width:16px;height:16px;accent-color:var(--g600)"> 🥤 Chhachh
+                  </label>
+                  <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text2)">
+                    <input type="checkbox" id="nu-sabzi" style="width:16px;height:16px;accent-color:var(--g600)"> 🥬 Sabzi
+                  </label>
+                </div>
+              </div>
+              <div style="background:var(--g50);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px;font-size:13px;color:var(--text3)" id="username-preview">
+                Username: <strong style="color:var(--g700)">—</strong>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-primary" onclick="addUser()">+ User Banayein</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">👥 Saare Users</div>
+              <div id="users-list"></div>
+            </div>
+          </div>
+
+          <!-- Rates Tab -->
+          <div id="adm-rates" class="adm-tab" style="display:none">
+            <div class="card">
+              <div class="card-title">🥛 Milk Rate (Fixed)</div>
+              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                <div class="form-group" style="flex:1;min-width:150px">
+                  <label class="form-label">Rate ₹ per Litre</label>
+                  <input class="form-input" type="number" id="milk-rate-inp" step="0.5" placeholder="50">
+                </div>
+                <button class="btn btn-primary" style="margin-top:18px" onclick="saveMilkRate()">Save</button>
+              </div>
+              <div id="milk-rate-display" style="margin-top:12px;font-size:14px;color:var(--text3)"></div>
+            </div>
+            <div class="card">
+              <div class="card-title">🥤 Chhachh Rate</div>
+              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                <div class="form-group" style="flex:1;min-width:150px">
+                  <label class="form-label">Rate ₹ per Litre</label>
+                  <input class="form-input" type="number" id="chhachh-rate-inp" step="0.5" placeholder="20">
+                </div>
+                <button class="btn btn-primary" style="margin-top:18px" onclick="saveChhachhRate()">Save</button>
+              </div>
+              <div id="chhachh-rate-display" style="margin-top:12px;font-size:14px;color:var(--text3)"></div>
+            </div>
+          </div>
+
+          <!-- Sabzi List Tab -->
+          <div id="adm-sabzilist" class="adm-tab" style="display:none">
+            <div class="card">
+              <div class="card-title">🥬 Sabzi Item Add Karein</div>
+              <div id="sabzi-item-msg" class="msg"></div>
+              <div class="form-grid three">
+                <div class="form-group">
+                  <label class="form-label">Item Naam</label>
+                  <input class="form-input" type="text" id="si-name" placeholder="Aalu">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Rate ₹/kg</label>
+                  <input class="form-input" type="number" id="si-rate" step="0.5" placeholder="30">
+                </div>
+                <div class="form-group" style="justify-content:flex-end">
+                  <label class="form-label">&nbsp;</label>
+                  <button class="btn btn-primary" onclick="addSabziItem()">+ Add</button>
+                </div>
+              </div>
+              <div style="margin-top:8px">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text2)">
+                  <input type="checkbox" id="si-mix" style="accent-color:var(--g600);width:16px;height:16px"> Yeh Mix item hai (alag rate)
+                </label>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">📋 Sabzi List</div>
+              <div id="sabzi-items-admin"></div>
+            </div>
+          </div>
+
+          <!-- Security Tab -->
+          <div id="adm-security" class="adm-tab" style="display:none">
+            <div class="card">
+              <div class="card-title">🔑 PIN Badlein</div>
+              <div id="pin-change-msg" class="msg"></div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Purana PIN</label>
+                  <input class="form-input" type="password" id="old-pin" maxlength="4" placeholder="••••">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Naya PIN</label>
+                  <input class="form-input" type="password" id="new-pin-inp" maxlength="4" placeholder="••••">
+                </div>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-primary" onclick="changePin()">PIN Badlein</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+  </div><!-- /layout -->
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav">
+    <div class="mobile-nav-items">
+      <button class="mob-nav-item active" onclick="gotoPage('portal')" id="mob-portal">
+        <span class="mob-icon">🏠</span>Portal
+      </button>
+      <button class="mob-nav-item" onclick="gotoPage('delivery')" id="mob-delivery" style="display:none">
+        <span class="mob-icon">🚚</span>Delivery
+      </button>
+      <button class="mob-nav-item" onclick="gotoPage('admin')" id="mob-admin" style="display:none">
+        <span class="mob-icon">⚙️</span>Admin
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ── DATA ──
+let PIN = '1234';
+let DB = JSON.parse(localStorage.getItem('kaaviDB') || JSON.stringify({
+  users: [
+    {id:'C001',name:'Ramesh Kumar',mobile:'9876543210',username:'Ramesh9876',password:'1234',type:'normal',services:{milk:true,chhachh:false,sabzi:true}},
+    {id:'C002',name:'Sunita Devi',mobile:'8765432109',username:'Sunita8765',password:'1234',type:'normal',services:{milk:true,chhachh:true,sabzi:false}},
+    {id:'A001',name:'Admin',mobile:'0000000000',username:'Admin0000',password:'1234',type:'admin',services:{milk:true,chhachh:true,sabzi:true}}
+  ],
+  deliveries:[],
+  milkRate:50,
+  chhachhRate:20,
+  sabziItems:[
+    {id:'s1',name:'Aalu',rate:30,isMix:false},
+    {id:'s2',name:'Tamatar',rate:40,isMix:false},
+    {id:'s3',name:'Pyaz',rate:35,isMix:false},
+    {id:'s4',name:'Mix Sabzi',rate:45,isMix:true}
+  ]
+}));
+let PIN_KEY = 'kaaviPIN';
+PIN = localStorage.getItem(PIN_KEY) || '1234';
+
+let currentUser = null;
+
+function save(){ localStorage.setItem('kaaviDB', JSON.stringify(DB)); }
+
+// ── LOGIN ──
+function doLogin(){
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  const user = DB.users.find(x => x.username === u && x.password === p);
+  const errEl = document.getElementById('login-err');
+  if(!user){ errEl.className='msg msg-error show'; return; }
+  errEl.className='msg msg-error';
+  currentUser = user;
+  localStorage.setItem('kaaviSession', JSON.stringify({username:u,password:p}));
+  launchApp();
+}
+
+function doLogout(){
+  localStorage.removeItem('kaaviSession');
+  currentUser = null;
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-user').value='';
+  document.getElementById('login-pass').value='';
+}
+
+function launchApp(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  const av = document.getElementById('hdr-av');
+  const nm = document.getElementById('hdr-name');
+  av.textContent = currentUser.name.charAt(0).toUpperCase();
+  nm.textContent = currentUser.name.split(' ')[0];
+
+  const isDelivery = currentUser.type === 'delivery' || currentUser.type === 'admin';
+  const isAdmin = currentUser.type === 'admin';
+  document.getElementById('nav-delivery-section').style.display = isDelivery ? 'block' : 'none';
+  document.getElementById('nav-admin-section').style.display = isAdmin ? 'block' : 'none';
+  document.getElementById('mob-delivery').style.display = isDelivery ? 'flex' : 'none';
+  document.getElementById('mob-admin').style.display = isAdmin ? 'flex' : 'none';
+
+  loadPortal();
+  gotoPage('portal');
+}
+
+// Auto-login
+window.addEventListener('load', ()=>{
+  const sess = localStorage.getItem('kaaviSession');
+  if(sess){
+    const {username,password} = JSON.parse(sess);
+    const user = DB.users.find(x => x.username===username && x.password===password);
+    if(user){ currentUser=user; launchApp(); return; }
+  }
+});
+
+// ── NAVIGATION ──
+function gotoPage(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  const ni = document.getElementById('nav-'+p);
+  if(ni) ni.classList.add('active');
+  document.querySelectorAll('.mob-nav-item').forEach(x=>x.classList.remove('active'));
+  const mi = document.getElementById('mob-'+p);
+  if(mi) mi.classList.add('active');
+  if(p==='delivery') initDelForm();
+  if(p==='admin') initAdminPanel();
+}
+
+// ── PORTAL ──
+function loadPortal(){
+  if(!currentUser) return;
+  const svcs = currentUser.services || {milk:true,chhachh:true,sabzi:true};
+  const tabs = document.getElementById('service-tabs-container');
+  tabs.innerHTML = '';
+  const available = [];
+  if(svcs.milk) available.push({key:'milk',label:'🥛 Milk'});
+  if(svcs.chhachh) available.push({key:'chhachh',label:'🥤 Chhachh'});
+  if(svcs.sabzi) available.push({key:'sabzi',label:'🥬 Sabzi'});
+  available.forEach((s,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'service-tab' + (i===0?' active':'');
+    btn.innerHTML = s.label;
+    btn.onclick = ()=>switchService(s.key);
+    tabs.appendChild(btn);
+  });
+  const now = new Date();
+  document.getElementById('portal-month-label').textContent = now.toLocaleDateString('hi-IN',{month:'long',year:'numeric'});
+  if(available.length) switchService(available[0].key);
+}
+
+function switchService(key){
+  document.querySelectorAll('.service-tab').forEach(b=>b.classList.remove('active'));
+  event && event.target && event.target.classList.add('active');
+  document.querySelectorAll('.service-tab').forEach(b=>{ if(b.textContent.toLowerCase().includes(key.split('')[1]||key)) b.classList.add('active'); });
+  document.querySelectorAll('.svc-page').forEach(p=>p.style.display='none');
+  document.getElementById('svc-'+key).style.display='block';
+  loadServiceData(key);
+  buildGrandTotal();
+}
+
+function getMonthEntries(type){
+  const now = new Date();
+  return DB.deliveries.filter(d=>{
+    const dd = new Date(d.date);
+    return d.uid===currentUser.id && d.type===type && dd.getMonth()===now.getMonth() && dd.getFullYear()===now.getFullYear();
+  });
+}
+
+function loadServiceData(type){
+  const entries = getMonthEntries(type);
+  if(type==='milk'){
+    const total = entries.reduce((s,e)=>s+parseFloat(e.qty),0);
+    const fat = entries.length ? entries.reduce((s,e)=>s+parseFloat(e.fat||0),0)/entries.length : 0;
+    const bill = entries.reduce((s,e)=>s+parseFloat(e.amount),0);
+    document.getElementById('m-total').innerHTML=total.toFixed(1)+'<span class="stat-unit">L</span>';
+    document.getElementById('m-fat').innerHTML=fat.toFixed(1)+'<span class="stat-unit">%</span>';
+    document.getElementById('m-bill').textContent=bill.toFixed(0);
+    document.getElementById('milk-tbody').innerHTML = entries.length ? entries.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(e=>`<tr><td>${e.date}</td><td>${e.time}</td><td><b>${e.qty}L</b></td><td><span class="badge badge-green">${e.fat||'-'}%</span></td><td>₹${e.rate}/L</td><td><b>₹${parseFloat(e.amount).toFixed(0)}</b></td></tr>`).join('') : '<tr class="empty-row"><td colspan="6">Is mahine koi delivery nahi</td></tr>';
+  } else if(type==='chhachh'){
+    const total = entries.reduce((s,e)=>s+parseFloat(e.qty),0);
+    const bill = entries.reduce((s,e)=>s+parseFloat(e.amount),0);
+    document.getElementById('c-total').innerHTML=total.toFixed(1)+'<span class="stat-unit">L</span>';
+    document.getElementById('c-bill').textContent=bill.toFixed(0);
+    document.getElementById('chhachh-tbody').innerHTML = entries.length ? entries.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(e=>`<tr><td>${e.date}</td><td>${e.time}</td><td><b>${e.qty}L</b></td><td>₹${e.rate}/L</td><td><b>₹${parseFloat(e.amount).toFixed(0)}</b></td></tr>`).join('') : '<tr class="empty-row"><td colspan="5">Is mahine koi delivery nahi</td></tr>';
+  } else if(type==='sabzi'){
+    const bill = entries.reduce((s,e)=>s+parseFloat(e.amount),0);
+    document.getElementById('s-orders').textContent=entries.length;
+    document.getElementById('s-bill').textContent=bill.toFixed(0);
+    document.getElementById('sabzi-tbody').innerHTML = entries.length ? entries.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(e=>`<tr><td>${e.date}</td><td>${e.time}</td><td style="font-size:12px">${e.itemsSummary||'-'}</td><td><b>₹${parseFloat(e.amount).toFixed(0)}</b></td></tr>`).join('') : '<tr class="empty-row"><td colspan="4">Is mahine koi delivery nahi</td></tr>';
+  }
+}
+
+function buildGrandTotal(){
+  if(!currentUser) return;
+  const svcs = currentUser.services || {};
+  let rows='', total=0;
+  if(svcs.milk){ const b=getMonthEntries('milk').reduce((s,e)=>s+parseFloat(e.amount),0); rows+=`<div class="gt-row"><span>🥛 Milk</span><span>₹${b.toFixed(0)}</span></div>`; total+=b; }
+  if(svcs.chhachh){ const b=getMonthEntries('chhachh').reduce((s,e)=>s+parseFloat(e.amount),0); rows+=`<div class="gt-row"><span>🥤 Chhachh</span><span>₹${b.toFixed(0)}</span></div>`; total+=b; }
+  if(svcs.sabzi){ const b=getMonthEntries('sabzi').reduce((s,e)=>s+parseFloat(e.amount),0); rows+=`<div class="gt-row"><span>🥬 Sabzi</span><span>₹${b.toFixed(0)}</span></div>`; total+=b; }
+  document.getElementById('grand-total-section').innerHTML=`<div class="grand-total"><div class="gt-title">Is Mahine ka Total Bill</div><div class="gt-rows">${rows}</div><hr class="gt-divider"><div class="gt-total"><span>Kul Total</span><span>₹${total.toFixed(0)}</span></div><div class="gt-actions"><button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border-color:rgba(255,255,255,0.4)" onclick="dlAllExcel()">⬇ Poora Excel Download</button></div></div>`;
+}
+
+// ── EXCEL ──
+function dlExcel(type){
+  const entries = getMonthEntries(type);
+  if(!entries.length){ alert('Koi data nahi'); return; }
+  let rows;
+  if(type==='milk') rows=entries.map(e=>({'Tarikh':e.date,'Samay':e.time,'Wajan(L)':e.qty,'Fat%':e.fat,'Rate Rs/L':e.rate,'Amount Rs':parseFloat(e.amount).toFixed(0)}));
+  else if(type==='chhachh') rows=entries.map(e=>({'Tarikh':e.date,'Samay':e.time,'Wajan(L)':e.qty,'Rate Rs/L':e.rate,'Amount Rs':parseFloat(e.amount).toFixed(0)}));
+  else rows=entries.map(e=>({'Tarikh':e.date,'Samay':e.time,'Items':e.itemsSummary,'Amount Rs':parseFloat(e.amount).toFixed(0)}));
+  const ws=XLSX.utils.json_to_sheet(rows);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,type);
+  XLSX.writeFile(wb,`${currentUser.id}_${type}_${new Date().toISOString().slice(0,7)}.xlsx`);
+}
+
+function dlAllExcel(){
+  const wb=XLSX.utils.book_new();
+  ['milk','chhachh','sabzi'].forEach(type=>{
+    const entries=getMonthEntries(type);
+    if(entries.length){
+      let rows;
+      if(type==='milk') rows=entries.map(e=>({'Tarikh':e.date,'Samay':e.time,'Wajan(L)':e.qty,'Fat%':e.fat,'Rate':e.rate,'Amount':parseFloat(e.amount).toFixed(0)}));
+      else if(type==='chhachh') rows=entries.map(e=>({'Tarikh':e.date,'Samay':e.time,'Wajan(L)':e.qty,'Rate':e.rate,'Amount':parseFloat(e.amount).toFixed(0)}));
+      else rows=entries.map(e=>({'Tarikh':e.date,'Samay':e.time,'Items':e.itemsSummary,'Amount':parseFloat(e.amount).toFixed(0)}));
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),type);
+    }
+  });
+  XLSX.writeFile(wb,`${currentUser.id}_${new Date().toISOString().slice(0,7)}.xlsx`);
+}
+
+// ── DELIVERY ──
+function checkDelPin(){
+  if(document.getElementById('del-pin-inp').value===PIN){
+    document.getElementById('del-pin-wrap').style.display='none';
+    document.getElementById('del-content').style.display='block';
+  } else {
+    showMsg('del-pin-msg','PIN galat hai!','error');
+    document.getElementById('del-pin-inp').value='';
+  }
+}
+function lockDel(){ document.getElementById('del-pin-wrap').style.display='flex'; document.getElementById('del-content').style.display='none'; document.getElementById('del-pin-inp').value=''; }
+
+function initDelForm(){
+  const today=new Date().toISOString().split('T')[0];
+  const now=new Date();
+  const t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  ['dm','dc','ds'].forEach(p=>{ const d=document.getElementById(p+'-date'); const ti=document.getElementById(p+'-time'); if(d&&!d.value)d.value=today; if(ti&&!ti.value)ti.value=t; });
+  const uidDls=['uid-dl-milk','uid-dl-chhachh','uid-dl-sabzi'];
+  uidDls.forEach(id=>{ const dl=document.getElementById(id); if(dl) dl.innerHTML=DB.users.filter(u=>u.type!='admin'&&u.type!='delivery').map(u=>`<option value="${u.id}">${u.name}</option>`).join(''); });
+  buildSabziGrid();
+  refreshTodayLogs();
+}
+
+function switchDelTab(t){
+  document.querySelectorAll('.sub-tab').forEach((b,i)=>{ b.classList.toggle('active',['milk','chhachh','sabzi'][i]===t); });
+  document.querySelectorAll('.del-form').forEach(f=>f.style.display='none');
+  document.getElementById('del-'+t).style.display='block';
+}
+
+function clearForm(type){
+  if(type==='milk'){ document.getElementById('dm-uid').value=''; document.getElementById('dm-qty').value=''; document.getElementById('dm-fat').value=''; }
+  if(type==='chhachh'){ document.getElementById('dc-uid').value=''; document.getElementById('dc-qty').value=''; }
+  if(type==='sabzi'){ document.getElementById('ds-uid').value=''; document.querySelectorAll('.sabzi-item').forEach(i=>{ i.classList.remove('checked'); i.querySelector('.sabzi-qty-input').value=''; }); calcSabziTotal(); }
+}
+
+function saveDel(type){
+  if(type==='milk'){
+    const uid=document.getElementById('dm-uid').value.trim().toUpperCase();
+    const date=document.getElementById('dm-date').value;
+    const time=document.getElementById('dm-time').value;
+    const qty=parseFloat(document.getElementById('dm-qty').value);
+    const fat=parseFloat(document.getElementById('dm-fat').value)||0;
+    if(!uid||!date||!time||isNaN(qty)){ showMsg('del-milk-msg','Saari fields bharo!','error'); return; }
+    const cust=DB.users.find(c=>c.id===uid);
+    if(!cust){ showMsg('del-milk-msg','Customer ID nahi mili','error'); return; }
+    const rate=DB.milkRate||50;
+    const amount=(qty*rate).toFixed(2);
+    DB.deliveries.push({uid,type:'milk',date,time,qty:qty.toFixed(2),fat:fat.toFixed(1),rate,amount});
+    save(); showMsg('del-milk-msg',`Saved! ${cust.name} - ${qty}L = ₹${amount}`,'success'); clearForm('milk'); refreshTodayLogs();
+  } else if(type==='chhachh'){
+    const uid=document.getElementById('dc-uid').value.trim().toUpperCase();
+    const date=document.getElementById('dc-date').value;
+    const time=document.getElementById('dc-time').value;
+    const qty=parseFloat(document.getElementById('dc-qty').value);
+    if(!uid||!date||!time||isNaN(qty)){ showMsg('del-chhachh-msg','Saari fields bharo!','error'); return; }
+    const cust=DB.users.find(c=>c.id===uid);
+    if(!cust){ showMsg('del-chhachh-msg','Customer ID nahi mili','error'); return; }
+    const rate=DB.chhachhRate||20;
+    const amount=(qty*rate).toFixed(2);
+    DB.deliveries.push({uid,type:'chhachh',date,time,qty:qty.toFixed(2),rate,amount});
+    save(); showMsg('del-chhachh-msg',`Saved! ${cust.name} - ${qty}L = ₹${amount}`,'success'); clearForm('chhachh'); refreshTodayLogs();
+  } else if(type==='sabzi'){
+    const uid=document.getElementById('ds-uid').value.trim().toUpperCase();
+    const date=document.getElementById('ds-date').value;
+    const time=document.getElementById('ds-time').value;
+    if(!uid||!date||!time){ showMsg('del-sabzi-msg','Saari fields bharo!','error'); return; }
+    const cust=DB.users.find(c=>c.id===uid);
+    if(!cust){ showMsg('del-sabzi-msg','Customer ID nahi mili','error'); return; }
+    const selected=[]; let total=0;
+    document.querySelectorAll('.sabzi-item.checked').forEach(item=>{
+      const id=item.dataset.id; const qty=parseFloat(item.querySelector('.sabzi-qty-input').value)||0;
+      const si=DB.sabziItems.find(s=>s.id===id);
+      if(si&&qty>0){ selected.push({name:si.name,qty,rate:si.rate,amount:(qty*si.rate).toFixed(2)}); total+=qty*si.rate; }
+    });
+    if(!selected.length){ showMsg('del-sabzi-msg','Koi item select nahi kiya','error'); return; }
+    const itemsSummary=selected.map(s=>`${s.name} ${s.qty}kg`).join(', ');
+    DB.deliveries.push({uid,type:'sabzi',date,time,items:selected,itemsSummary,amount:total.toFixed(2)});
+    save(); showMsg('del-sabzi-msg',`Saved! ${cust.name} - ₹${total.toFixed(0)}`,'success'); clearForm('sabzi'); refreshTodayLogs();
+  }
+}
+
+function refreshTodayLogs(){
+  const today=new Date().toISOString().split('T')[0];
+  ['milk','chhachh','sabzi'].forEach(type=>{
+    const entries=DB.deliveries.filter(d=>d.date===today&&d.type===type);
+    const countEl=document.getElementById(type+'-today-count');
+    if(countEl) countEl.textContent=entries.length+' records';
+    const tbody=document.getElementById(type+'-today-log');
+    if(!tbody) return;
+    if(!entries.length){ tbody.innerHTML='<tr class="empty-row"><td colspan="6">Aaj koi delivery nahi</td></tr>'; return; }
+    if(type==='milk') tbody.innerHTML=entries.map((e,i)=>{ const gi=DB.deliveries.indexOf(e); const c=DB.users.find(u=>u.id===e.uid); return`<tr><td><b>${e.uid}</b><br><span style="font-size:11px;color:var(--text3)">${c?.name||''}</span></td><td>${e.time}</td><td>${e.qty}L</td><td>${e.fat}%</td><td>₹${parseFloat(e.amount).toFixed(0)}</td><td><button class="btn btn-danger btn-xs" onclick="delEntry(${gi})">✕</button></td></tr>`; }).join('');
+    else if(type==='chhachh') tbody.innerHTML=entries.map((e)=>{ const gi=DB.deliveries.indexOf(e); const c=DB.users.find(u=>u.id===e.uid); return`<tr><td><b>${e.uid}</b><br><span style="font-size:11px;color:var(--text3)">${c?.name||''}</span></td><td>${e.time}</td><td>${e.qty}L</td><td>₹${parseFloat(e.amount).toFixed(0)}</td><td><button class="btn btn-danger btn-xs" onclick="delEntry(${gi})">✕</button></td></tr>`; }).join('');
+    else tbody.innerHTML=entries.map((e)=>{ const gi=DB.deliveries.indexOf(e); const c=DB.users.find(u=>u.id===e.uid); return`<tr><td><b>${e.uid}</b><br><span style="font-size:11px;color:var(--text3)">${c?.name||''}</span></td><td>${e.time}</td><td style="font-size:12px">${e.itemsSummary}</td><td>₹${parseFloat(e.amount).toFixed(0)}</td><td><button class="btn btn-danger btn-xs" onclick="delEntry(${gi})">✕</button></td></tr>`; }).join('');
+  });
+}
+
+function delEntry(idx){ if(!confirm('Delete karein?')) return; DB.deliveries.splice(idx,1); save(); refreshTodayLogs(); }
+
+function buildSabziGrid(){
+  const grid=document.getElementById('sabzi-items-grid');
+  if(!grid) return;
+  grid.innerHTML=DB.sabziItems.map(s=>`
+    <div class="sabzi-item" data-id="${s.id}" onclick="toggleSabzi(this)">
+      <div class="sabzi-item-header">
+        <div class="sabzi-checkbox"><span class="sabzi-check-icon">✓</span></div>
+        <div>
+          <div class="sabzi-name">${s.name}${s.isMix?' 🌿':''}</div>
+          <div class="sabzi-rate">₹${s.rate}/kg</div>
+        </div>
+      </div>
+      <div class="sabzi-qty-row">
+        <label>Wajan (kg)</label>
+        <input class="sabzi-qty-input" type="number" step="0.1" min="0" placeholder="0" onclick="event.stopPropagation()" oninput="calcSabziTotal()">
+      </div>
+    </div>`).join('');
+}
+
+function toggleSabzi(el){ el.classList.toggle('checked'); calcSabziTotal(); }
+
+function calcSabziTotal(){
+  let total=0;
+  document.querySelectorAll('.sabzi-item.checked').forEach(item=>{
+    const id=item.dataset.id; const qty=parseFloat(item.querySelector('.sabzi-qty-input').value)||0;
+    const si=DB.sabziItems.find(s=>s.id===id);
+    if(si) total+=qty*si.rate;
+  });
+  const el=document.getElementById('sabzi-total-preview');
+  if(el) el.textContent=total.toFixed(0);
+}
+
+// ── ADMIN ──
+function checkAdmPin(){
+  if(document.getElementById('adm-pin-inp').value===PIN){
+    document.getElementById('adm-pin-wrap').style.display='none';
+    document.getElementById('adm-content').style.display='block';
+    initAdminPanel();
+  } else {
+    showMsg('adm-pin-msg','PIN galat hai!','error');
+    document.getElementById('adm-pin-inp').value='';
+  }
+}
+function lockAdm(){ document.getElementById('adm-pin-wrap').style.display='flex'; document.getElementById('adm-content').style.display='none'; document.getElementById('adm-pin-inp').value=''; }
+
+function switchAdmTab(t){
+  document.querySelectorAll('.sub-tab').forEach((b,i)=>{ b.classList.toggle('active',['users','rates','sabzilist','security'][i]===t); });
+  document.querySelectorAll('.adm-tab').forEach(f=>f.style.display='none');
+  document.getElementById('adm-'+t).style.display='block';
+}
+
+function initAdminPanel(){
+  renderUsers(); renderRates(); renderSabziAdmin();
+  document.getElementById('nu-name').addEventListener('input', updateUsernamePreview);
+  document.getElementById('nu-mobile').addEventListener('input', updateUsernamePreview);
+}
+
+function updateUsernamePreview(){
+  const name=document.getElementById('nu-name').value.trim().split(' ')[0];
+  const mob=document.getElementById('nu-mobile').value.trim().slice(0,4);
+  const uname = name&&mob ? name+mob : '—';
+  document.getElementById('username-preview').innerHTML=`Username: <strong style="color:var(--g700)">${uname}</strong>`;
+}
+
+function genUserId(){
+  const ids=DB.users.map(u=>u.id).filter(id=>/^C\d+$/.test(id)).map(id=>parseInt(id.slice(1)));
+  const max=ids.length ? Math.max(...ids) : 0;
+  return 'C'+(max+1).toString().padStart(3,'0');
+}
+
+function addUser(){
+  const name=document.getElementById('nu-name').value.trim();
+  const mobile=document.getElementById('nu-mobile').value.trim();
+  const pass=document.getElementById('nu-pass').value.trim();
+  const type=document.getElementById('nu-type').value;
+  const milk=document.getElementById('nu-milk').checked;
+  const chhachh=document.getElementById('nu-chhachh').checked;
+  const sabzi=document.getElementById('nu-sabzi').checked;
+  if(!name||!mobile||!pass){ showMsg('adm-user-msg','Naam, Mobile aur Password zaroori hai','error'); return; }
+  if(mobile.length<4){ showMsg('adm-user-msg','Mobile number kum se kum 4 digit ka hona chahiye','error'); return; }
+  const firstName=name.split(' ')[0];
+  const username=firstName+mobile.slice(0,4);
+  if(DB.users.find(u=>u.username===username)){ showMsg('adm-user-msg','Yeh username pehle se exist karta hai','error'); return; }
+  const id=genUserId();
+  DB.users.push({id,name,mobile,username,password:pass,type,services:{milk,chhachh,sabzi}});
+  save(); renderUsers();
+  showMsg('adm-user-msg',`User bana! ID: ${id}, Username: ${username}`,'success');
+  document.getElementById('nu-name').value=''; document.getElementById('nu-mobile').value=''; document.getElementById('nu-pass').value='';
+  document.getElementById('nu-milk').checked=false; document.getElementById('nu-chhachh').checked=false; document.getElementById('nu-sabzi').checked=false;
+  document.getElementById('username-preview').innerHTML=`Username: <strong style="color:var(--g700)">—</strong>`;
+}
+
+function renderUsers(){
+  const list=document.getElementById('users-list');
+  if(!list) return;
+  list.innerHTML=DB.users.map((u,i)=>`
+    <div class="user-card">
+      <div class="user-av">${u.name.charAt(0).toUpperCase()}</div>
+      <div class="user-info">
+        <div class="user-name">${u.name} <span class="badge badge-gray" style="font-size:10px">${u.id}</span></div>
+        <div class="user-meta">@${u.username} · ${u.type}</div>
+        <div class="user-services">
+          ${u.services?.milk?'<span class="svc-pill svc-milk">🥛 Milk</span>':''}
+          ${u.services?.chhachh?'<span class="svc-pill svc-chhachh">🥤 Chhachh</span>':''}
+          ${u.services?.sabzi?'<span class="svc-pill svc-sabzi">🥬 Sabzi</span>':''}
+        </div>
+      </div>
+      <button class="btn btn-danger btn-xs" onclick="deleteUser(${i})">✕</button>
+    </div>`).join('');
+}
+
+function deleteUser(i){ if(!confirm('User delete karein?')) return; DB.users.splice(i,1); save(); renderUsers(); }
+
+function renderRates(){
+  const mr=document.getElementById('milk-rate-display');
+  const cr=document.getElementById('chhachh-rate-display');
+  if(mr) mr.textContent=`Current rate: ₹${DB.milkRate||50} per litre`;
+  if(cr) cr.textContent=`Current rate: ₹${DB.chhachhRate||20} per litre`;
+  const mi=document.getElementById('milk-rate-inp');
+  const ci=document.getElementById('chhachh-rate-inp');
+  if(mi) mi.value=DB.milkRate||50;
+  if(ci) ci.value=DB.chhachhRate||20;
+}
+
+function saveMilkRate(){ const v=parseFloat(document.getElementById('milk-rate-inp').value); if(isNaN(v)) return; DB.milkRate=v; save(); renderRates(); }
+function saveChhachhRate(){ const v=parseFloat(document.getElementById('chhachh-rate-inp').value); if(isNaN(v)) return; DB.chhachhRate=v; save(); renderRates(); }
+
+function addSabziItem(){
+  const name=document.getElementById('si-name').value.trim();
+  const rate=parseFloat(document.getElementById('si-rate').value);
+  const isMix=document.getElementById('si-mix').checked;
+  if(!name||isNaN(rate)){ showMsg('sabzi-item-msg','Naam aur rate dono bharo','error'); return; }
+  const id='s'+Date.now();
+  DB.sabziItems.push({id,name,rate,isMix});
+  save(); renderSabziAdmin(); buildSabziGrid();
+  document.getElementById('si-name').value=''; document.getElementById('si-rate').value=''; document.getElementById('si-mix').checked=false;
+  showMsg('sabzi-item-msg',name+' add ho gaya!','success');
+}
+
+function renderSabziAdmin(){
+  const el=document.getElementById('sabzi-items-admin');
+  if(!el) return;
+  el.innerHTML=DB.sabziItems.map((s,i)=>`
+    <div class="rate-row">
+      <div class="rate-label">${s.name}${s.isMix?' <span class="badge badge-green" style="font-size:10px">Mix</span>':''}</div>
+      <div class="rate-val">₹${s.rate}/kg</div>
+      <button class="btn btn-danger btn-xs" onclick="deleteSabziItem(${i})">✕</button>
+    </div>`).join('') || '<div style="color:var(--text3);font-size:14px;padding:1rem">Koi item nahi</div>';
+}
+
+function deleteSabziItem(i){ DB.sabziItems.splice(i,1); save(); renderSabziAdmin(); buildSabziGrid(); }
+
+function changePin(){
+  const old=document.getElementById('old-pin').value;
+  const nw=document.getElementById('new-pin-inp').value;
+  if(old!==PIN){ showMsg('pin-change-msg','Purana PIN galat hai','error'); return; }
+  if(nw.length!==4||isNaN(nw)){ showMsg('pin-change-msg','Naya PIN 4 digits ka hona chahiye','error'); return; }
+  PIN=nw; localStorage.setItem(PIN_KEY,PIN);
+  showMsg('pin-change-msg','PIN badal gaya! ✓','success');
+  document.getElementById('old-pin').value=''; document.getElementById('new-pin-inp').value='';
+}
+
+// ── HELPERS ──
+function showMsg(id,text,type){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.className='msg msg-'+type+' show';
+  el.textContent=text;
+  setTimeout(()=>{ el.className='msg'; },3500);
+}
+
+function initAdminPanel(){
+  renderUsers(); renderRates(); renderSabziAdmin();
+  const nn=document.getElementById('nu-name'); const nm=document.getElementById('nu-mobile');
+  if(nn) nn.addEventListener('input',updateUsernamePreview);
+  if(nm) nm.addEventListener('input',updateUsernamePreview);
+}
+</script>
+</body>
+</html>
